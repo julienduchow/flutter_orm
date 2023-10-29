@@ -10,10 +10,10 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
 
   @override
   generateForAnnotatedElement(Element element, ConstantReader annotation, BuildStep buildStep) {
-    //MetaClass metaClass = generateMetaData(element);
+    MetaClass metaClass = generateMetaData(element);
     StringBuffer stringBuffer = StringBuffer();
 
-    /*generateHead(metaClass, stringBuffer);
+    generateHead(metaClass, stringBuffer);
     generateTableName(metaClass, stringBuffer);
     generateCreateTableSql(metaClass, stringBuffer);
     generateQueryRowToEntity(metaClass, stringBuffer);
@@ -25,7 +25,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
     generateUpdate(metaClass, stringBuffer);
     generateCustomUpdate(metaClass, stringBuffer);
     generateDelete(metaClass, stringBuffer);
-    generateFooter(metaClass, stringBuffer);*/
+    generateFooter(metaClass, stringBuffer);
 
     return stringBuffer.toString();
   }
@@ -402,6 +402,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
         ;
       });
       field.metadata.forEach((element) {
+        print(element.element.toString());
         if (element.element.toString() == "id? id()") {
           //print('IS ID!');
           metaField.isId = true;
