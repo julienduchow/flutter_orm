@@ -398,12 +398,12 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
       columnName: tableName + "_" + StringUtils.camelToUnderscoreCase(field.displayName), columnType: getSqlTypeForDartType(field.type));
       if (metaField.columnType.typeName == 'TEXT') metaField.isCustom = true;
       field.metadata.forEach((element) {
-        if (element.toString() == '@longText? longText()') metaField.columnType = ColumnType("TEXT", convertToSqlPre: "\"'\" + ", convertToSqlPost: " + \"'\"");
+        if (element.toString() == 'longText longText()') metaField.columnType = ColumnType("TEXT", convertToSqlPre: "\"'\" + ", convertToSqlPost: " + \"'\"");
         ;
       });
       field.metadata.forEach((element) {
         print(element.element.toString());
-        if (element.element.toString() == "id? id()") {
+        if (element.element.toString() == "id id()") {
           //print('IS ID!');
           metaField.isId = true;
           metaField.columnType.createExtension = ""; //""" PRIMARY KEY ON CONFLICT REPLACE";
