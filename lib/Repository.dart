@@ -16,14 +16,16 @@ abstract class Repository<E> {
     return "";
   }
 
-  Future<E> queryById(int id, String join) async {
-    QueryResultRow queryRow = await getDaoInstance(dbConnection).queryById(id, join);
+  Future<E?> queryById(int id, String join) async {
+    QueryResultRow? queryRow = await getDaoInstance(dbConnection).queryById(id, join);
+    if(queryRow == null) return null;
     E entity = getDaoInstance(dbConnection).queryRowTo(queryRow);
     return entity;
   }
 
-  Future<E> queryOne(String where, {String? join, String? order}) async {
-    QueryResultRow queryRow = await getDaoInstance(dbConnection).queryOne(where, join, order);
+  Future<E?> queryOne(String where, {String? join, String? order}) async {
+    QueryResultRow? queryRow = await getDaoInstance(dbConnection).queryOne(where, join, order);
+    if(queryRow == null) return null;
     E entity = getDaoInstance(dbConnection).queryRowTo(queryRow);
     return entity;
   }
@@ -63,15 +65,17 @@ abstract class Repository<E> {
 
   onDeleteDeep(E entity) async {}
 
-  Future<E> queryByIdDeep(int id) async {
-    QueryResultRow queryRow = await getDaoInstance(dbConnection).queryById(id, getDeepJoinStr());
+  Future<E?> queryByIdDeep(int id) async {
+    QueryResultRow? queryRow = await getDaoInstance(dbConnection).queryById(id, getDeepJoinStr());
+    if(queryRow == null) return null;
     E entity = getDaoInstance(dbConnection).queryRowTo(queryRow);
     if (entity != null) await onQueryDeep(entity, queryRow);
     return entity;
   }
 
-  Future<E> queryOneDeep(String where, {String? join, String? order}) async {
-    QueryResultRow queryRow = await getDaoInstance(dbConnection).queryOne(where, join, order);
+  Future<E?> queryOneDeep(String where, {String? join, String? order}) async {
+    QueryResultRow? queryRow = await getDaoInstance(dbConnection).queryOne(where, join, order);
+    if(queryRow == null) return null;
     E entity = getDaoInstance(dbConnection).queryRowTo(queryRow);
     if (entity != null) await onQueryDeep(entity, queryRow);
     return entity;

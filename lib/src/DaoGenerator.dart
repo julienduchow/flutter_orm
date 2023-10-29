@@ -67,7 +67,6 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
 
   void generateQueryRowToEntity(MetaClass metaClass, StringBuffer stringBuffer) {
     stringBuffer.writeln(metaClass.className + " queryRowTo(QueryResultRow queryRow) {");
-    stringBuffer.writeln("if(queryRow == null) return null;");
     stringBuffer.writeln(metaClass.className + " " + metaClass.instanceName + " = " + metaClass.className + "();");
     metaClass.listFields.forEach((metaField) {
       stringBuffer.writeln("if(queryRow.data['" + metaField.columnName + "'] != null) {");
