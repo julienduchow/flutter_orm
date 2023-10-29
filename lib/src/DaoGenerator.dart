@@ -399,12 +399,11 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
       MetaField metaField = MetaField(fieldName: field.displayName, fieldType: field.type.toString().substring(0, field.type.toString().length - 1),
       columnName: tableName + "_" + StringUtils.camelToUnderscoreCase(field.displayName), columnType: getSqlTypeForDartType(field.type, field));
       field.metadata.forEach((element) {
-        print('check -> ' + element.toString());
-        if (element.toString() == 'longText longText()') metaField.columnType = ColumnType("TEXT", convertToSqlPre: "\"'\" + ", convertToSqlPost: " + \"'\"");
+        if (element.element.toString() == 'longText longText()') metaField.columnType = ColumnType("TEXT", convertToSqlPre: "\"'\" + ", convertToSqlPost: " + \"'\"");
       });
       if (metaField.columnType.typeName == 'TEXT') metaField.isCustom = true;
       field.metadata.forEach((element) {
-        print(element.element.toString());
+        //print(element.element.toString());
         if (element.element.toString() == "id id()") {
           //print('IS ID!');
           metaField.isId = true;
