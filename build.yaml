@@ -1,0 +1,9 @@
+# Read about `build.yaml` at https://pub.dev/packages/build_config
+builders:
+  property_multiply:
+    import: "package:orm_generator/builder.dart"
+    builder_factories: ["ormBuilder"]
+    build_extensions: {".dart": ["orm.g.part"]}
+    auto_apply: dependents
+    build_to: cache
+    applies_builders: ["source_gen|combining_builder"]
