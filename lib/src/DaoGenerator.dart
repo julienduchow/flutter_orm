@@ -401,7 +401,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
       field.metadata.forEach((element) {
         if (element.element.toString() == 'longText longText()') metaField.columnType = ColumnType("TEXT", convertToSqlPre: "\"'\" + ", convertToSqlPost: " + \"'\"");
       });
-      if (metaField.columnType.typeName == 'TEXT') metaField.isCustom = true;
+      //if (metaField.columnType.typeName == 'TEXT') metaField.isCustom = true;
       field.metadata.forEach((element) {
         //print(element.element.toString());
         if (element.element.toString() == "id id()") {
