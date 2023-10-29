@@ -7,4 +7,5 @@ export 'package:duchow_orm/DbConnection.dart';
 export 'package:duchow_orm/FieldConverter.dart';
 export 'package:duchow_orm/InnerDatabase.dart';
 export 'package:duchow_orm/Repository.dart';
+export 'package:duchow_orm/Dao.dart';
 export 'package:drift/drift.dart';

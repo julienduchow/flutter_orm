@@ -229,7 +229,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
         "return await dbConnection.executeUpdate(\"INSERT INTO " + metaClass.tableName + " (\" +" + "columnNames + \") VALUES (\" + columnValues + \")\");");
     stringBuffer.writeln("} else {");
     stringBuffer.writeln(
-        "await batch.customStatement(\"INSERT INTO " + metaClass.tableName + " (\" +" + "columnNames + \") VALUES (\" + columnValues + \")\");");
+        "batch.customStatement(\"INSERT INTO " + metaClass.tableName + " (\" +" + "columnNames + \") VALUES (\" + columnValues + \")\");");
     stringBuffer.writeln("return Future(() => null);");
     stringBuffer.writeln("}");
 
@@ -291,7 +291,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
         (idIsStr ? "+\"'\"" : "") +
         ");");
     stringBuffer.writeln("} else {");
-    stringBuffer.writeln("await  batch.customStatement(\"UPDATE " +
+    stringBuffer.writeln("batch.customStatement(\"UPDATE " +
         metaClass.tableName +
         " SET \" +" +
         "columnChanges" +
@@ -354,7 +354,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
     stringBuffer
         .writeln("return await dbConnection.executeUpdate(\"UPDATE " + metaClass.tableName + " SET \" +" + "columnChanges" + " + \" WHERE \" + where);");
     stringBuffer.writeln("} else {");
-    stringBuffer.writeln("await batch.customStatement(\"UPDATE " + metaClass.tableName + " SET \" +" + "columnChanges" + " + \" WHERE \" + where);");
+    stringBuffer.writeln("batch.customStatement(\"UPDATE " + metaClass.tableName + " SET \" +" + "columnChanges" + " + \" WHERE \" + where);");
     stringBuffer.writeln("return Future(() => null);");
     stringBuffer.writeln("}");
 
