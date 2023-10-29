@@ -102,7 +102,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
 
   void generateQueryById(MetaClass metaClass, StringBuffer stringBuffer) {
     stringBuffer
-        .writeln("Future<QueryResultRow> queryById(" + metaClass.listFields.singleWhere((element) => element.isId).fieldType + " id, String join) async {");
+        .writeln("Future<QueryResultRow?> queryById(" + metaClass.listFields.singleWhere((element) => element.isId).fieldType + " id, String join) async {");
     bool idIsStr = metaClass.listFields.singleWhere((element) => element.isId).fieldType == "String";
     stringBuffer.writeln("List<QueryResultRow> l =  await dbConnection.executeQuery(\"SELECT * FROM " +
         metaClass.tableName +
@@ -118,22 +118,22 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
   }
 
   void generateQueryAll(MetaClass metaClass, StringBuffer stringBuffer) {
-    stringBuffer.writeln("Future<List<QueryResultRow>> queryAll({String where, String order, int limit, int offset, String join}) async {");
+    stringBuffer.writeln("Future<List<QueryResultRow>> queryAll({String? where, String? order, int? limit, int? offset, String? join}) async {");
     stringBuffer.writeln("String sqlStr = \"SELECT * FROM " + metaClass.tableName + "\";");
     stringBuffer.writeln("if(join != null) {");
-    stringBuffer.writeln("sqlStr += \" \" + join;");
+    stringBuffer.writeln("sqlStr += \" \" + join!;");
     stringBuffer.writeln("}");
     stringBuffer.writeln("if(where != null) {");
-    stringBuffer.writeln("sqlStr += \" WHERE \" + where;");
+    stringBuffer.writeln("sqlStr += \" WHERE \" + where!;");
     stringBuffer.writeln("}");
     stringBuffer.writeln("if(order != null) {");
-    stringBuffer.writeln("sqlStr += \" ORDER BY \" + order;");
+    stringBuffer.writeln("sqlStr += \" ORDER BY \" + order!;");
     stringBuffer.writeln("}");
     stringBuffer.writeln("if(limit != null) {");
-    stringBuffer.writeln("if(limit != null) {");
-    stringBuffer.writeln("sqlStr += \" LIMIT \" + limit.toString();");
+    stringBuffer.writeln("if(offset == null) {");
+    stringBuffer.writeln("sqlStr += \" LIMIT \" + limit!.toString();");
     stringBuffer.writeln("} else {");
-    stringBuffer.writeln("sqlStr += \" LIMIT \" + offset.toString() + \",\" + limit.toString();");
+    stringBuffer.writeln("sqlStr += \" LIMIT \" + offset!.toString() + \",\" + limit!.toString();");
     stringBuffer.writeln("}");
     stringBuffer.writeln("}");
     stringBuffer.writeln("sqlStr += \";\";");
@@ -142,16 +142,16 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
   }
 
   void generateQueryOne(MetaClass metaClass, StringBuffer stringBuffer) {
-    stringBuffer.writeln("Future<QueryResultRow> queryOne(String where, String join, String order) async {");
+    stringBuffer.writeln("Future<QueryResultRow?> queryOne(String where, String? join, String? order) async {");
     stringBuffer.writeln("String sqlStr = \"SELECT * FROM " + metaClass.tableName + "\";");
     stringBuffer.writeln("if(join != null) {");
-    stringBuffer.writeln("sqlStr += \" \" + join;");
+    stringBuffer.writeln("sqlStr += \" \" + join!;");
     stringBuffer.writeln("}");
     stringBuffer.writeln("if(where != null) {");
     stringBuffer.writeln("sqlStr += \" WHERE \" + where;");
     stringBuffer.writeln("}");
     stringBuffer.writeln("if(order != null) {");
-    stringBuffer.writeln("sqlStr += \" ORDER BY \" + order;");
+    stringBuffer.writeln("sqlStr += \" ORDER BY \" + order!;");
     stringBuffer.writeln("}");
     stringBuffer.writeln("sqlStr += \";\";");
     stringBuffer.writeln("List<QueryResultRow> l = await dbConnection.executeQuery(sqlStr);");
