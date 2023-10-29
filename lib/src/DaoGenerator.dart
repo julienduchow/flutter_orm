@@ -229,7 +229,8 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
         "return await dbConnection.executeUpdate(\"INSERT INTO " + metaClass.tableName + " (\" +" + "columnNames + \") VALUES (\" + columnValues + \")\");");
     stringBuffer.writeln("} else {");
     stringBuffer.writeln(
-        "return await batch.customStatement(\"INSERT INTO " + metaClass.tableName + " (\" +" + "columnNames + \") VALUES (\" + columnValues + \")\");");
+        "await batch.customStatement(\"INSERT INTO " + metaClass.tableName + " (\" +" + "columnNames + \") VALUES (\" + columnValues + \")\");");
+    stringBuffer.writeln("return Future(() => null);");
     stringBuffer.writeln("}");
 
     stringBuffer.writeln("}");
@@ -290,7 +291,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
         (idIsStr ? "+\"'\"" : "") +
         ");");
     stringBuffer.writeln("} else {");
-    stringBuffer.writeln("return await  batch.customStatement(\"UPDATE " +
+    stringBuffer.writeln("await  batch.customStatement(\"UPDATE " +
         metaClass.tableName +
         " SET \" +" +
         "columnChanges" +
@@ -305,6 +306,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
         ".toString()" +
         (idIsStr ? "+\"'\"" : "") +
         ");");
+    stringBuffer.writeln("return Future(() => null);");
     stringBuffer.writeln("}");
 
     stringBuffer.writeln("}");
@@ -327,7 +329,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
             metaField.columnType.convertToSqlPre +
             metaClass.instanceName +
             "." +
-            metaField.fieldName +
+            metaField.fieldName + "!" +
             metaField.columnType.convertToSqlPost +
             ";");
       } else {
@@ -352,7 +354,8 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
     stringBuffer
         .writeln("return await dbConnection.executeUpdate(\"UPDATE " + metaClass.tableName + " SET \" +" + "columnChanges" + " + \" WHERE \" + where);");
     stringBuffer.writeln("} else {");
-    stringBuffer.writeln("return await batch.customStatement(\"UPDATE " + metaClass.tableName + " SET \" +" + "columnChanges" + " + \" WHERE \" + where);");
+    stringBuffer.writeln("await batch.customStatement(\"UPDATE " + metaClass.tableName + " SET \" +" + "columnChanges" + " + \" WHERE \" + where);");
+    stringBuffer.writeln("return Future(() => null);");
     stringBuffer.writeln("}");
 
     stringBuffer.writeln("}");
