@@ -5,8 +5,8 @@ import 'package:duchow_orm/annotations.dart';
 import 'package:duchow_orm/src/StringUtils.dart';
 import 'package:source_gen/source_gen.dart';
 
-class DaoGenerator extends GeneratorForAnnotation<entity> {
-  const DaoGenerator();
+class OrmGenerator extends GeneratorForAnnotation<entity> {
+  const OrmGenerator();
 
   @override
   generateForAnnotatedElement(Element element, ConstantReader annotation, BuildStep buildStep) {

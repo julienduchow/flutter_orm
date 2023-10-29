@@ -13,9 +13,8 @@
 library source_gen_example.builder;
 
 import 'package:build/build.dart';
+import 'package:duchow_orm/src/DaoGenerator.dart';
 import 'package:source_gen/source_gen.dart';
-
-import 'orm_generator.dart';
 
 
 Builder ormBuilder(BuilderOptions options) =>
