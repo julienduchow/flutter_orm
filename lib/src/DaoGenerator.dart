@@ -397,12 +397,11 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
     }
     clazz.fields.forEach((field) {
       MetaField metaField = MetaField(fieldName: field.displayName, fieldType: field.type.toString().substring(0, field.type.toString().length - 1),
-      columnName: tableName + "_" + StringUtils.camelToUnderscoreCase(field.displayName), columnType: getSqlTypeForDartType(field.type));
-      if (metaField.columnType.typeName == 'TEXT') metaField.isCustom = true;
+      columnName: tableName + "_" + StringUtils.camelToUnderscoreCase(field.displayName), columnType: getSqlTypeForDartType(field.type, field));
       field.metadata.forEach((element) {
         if (element.toString() == 'longText longText()') metaField.columnType = ColumnType("TEXT", convertToSqlPre: "\"'\" + ", convertToSqlPost: " + \"'\"");
-        ;
       });
+      if (metaField.columnType.typeName == 'TEXT') metaField.isCustom = true;
       field.metadata.forEach((element) {
         print(element.element.toString());
         if (element.element.toString() == "id id()") {
@@ -424,7 +423,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
     return listFields;
   }
 
-  ColumnType getSqlTypeForDartType(DartType dartType) {
+  ColumnType getSqlTypeForDartType(DartType dartType, FieldElement field) {
     print(dartType.toString());
     if (dartType.toString() == "int?") {
       //print('Its a INT');
