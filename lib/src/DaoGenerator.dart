@@ -159,7 +159,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
   }
 
   void generateQueryCount(MetaClass metaClass, StringBuffer stringBuffer) {
-    stringBuffer.writeln("Future<int> queryCount({String where, String order, int limit, int offset, String join}) async {");
+    stringBuffer.writeln("Future<int> queryCount({String? where, String? order, int? limit, int? offset, String? join}) async {");
     stringBuffer.writeln("String sqlStr = \"SELECT COUNT(*) FROM " + metaClass.tableName + "\";");
     stringBuffer.writeln("if(join != null) {");
     stringBuffer.writeln("sqlStr += \" \" + join;");
@@ -171,7 +171,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
     stringBuffer.writeln("sqlStr += \" ORDER BY \" + order;");
     stringBuffer.writeln("}");
     stringBuffer.writeln("if(limit != null) {");
-    stringBuffer.writeln("if(limit != null) {");
+    stringBuffer.writeln("if(offset == null) {");
     stringBuffer.writeln("sqlStr += \" LIMIT \" + limit.toString();");
     stringBuffer.writeln("} else {");
     stringBuffer.writeln("sqlStr += \" LIMIT \" + offset.toString() + \",\" + limit.toString();");
