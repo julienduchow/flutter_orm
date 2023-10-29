@@ -205,7 +205,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
             metaField.columnType.convertToSqlPre +
             metaClass.instanceName +
             "." +
-            metaField.fieldName +
+            metaField.fieldName + "!" +
             metaField.columnType.convertToSqlPost +
             ";");
         stringBuffer.writeln("}");
@@ -251,7 +251,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
             metaField.columnType.convertToSqlPre +
             metaClass.instanceName +
             "." +
-            metaField.fieldName +
+            metaField.fieldName + "!" +
             metaField.columnType.convertToSqlPost +
             ";");
       } else {
