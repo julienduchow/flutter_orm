@@ -1,7 +1,7 @@
 # Read about `build.yaml` at https://pub.dev/packages/build_config
 builders:
   property_multiply:
-    import: "package:orm_generator/builder.dart"
+    import: "package:duchow_orm/builder.dart"
     builder_factories: ["ormBuilder"]
     build_extensions: {".dart": ["orm.g.part"]}
     auto_apply: dependents
