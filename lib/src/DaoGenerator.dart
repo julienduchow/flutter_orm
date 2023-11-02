@@ -185,7 +185,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
   }
 
   void generateInsert(MetaClass metaClass, StringBuffer stringBuffer) {
-    stringBuffer.writeln("Future<void> insert(" + metaClass.className + " " + metaClass.instanceName + ", Batch batch) async {");
+    stringBuffer.writeln("Future<void> insert(" + metaClass.className + " " + metaClass.instanceName + ", Batch? batch) async {");
     stringBuffer.writeln("if(" + metaClass.instanceName + "." + metaClass.listFields.firstWhere((element) => element.isId).fieldName + " == null) {");
     stringBuffer
         .writeln(metaClass.instanceName + "." + metaClass.listFields.firstWhere((element) => element.isId).fieldName + " = new Random().nextInt(4294967296);");
@@ -237,7 +237,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
   }
 
   void generateUpdate(MetaClass metaClass, StringBuffer stringBuffer) {
-    stringBuffer.writeln("Future<void> update(" + metaClass.className + " " + metaClass.instanceName + ", Batch batch) async {");
+    stringBuffer.writeln("Future<void> update(" + metaClass.className + " " + metaClass.instanceName + ", Batch? batch) async {");
     stringBuffer.writeln("String columnChanges = \"\";");
     stringBuffer.writeln("bool hadBefore = false;");
     metaClass.listFields.forEach((metaField) {
@@ -314,7 +314,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
 
   void generateCustomUpdate(MetaClass metaClass, StringBuffer stringBuffer) {
     stringBuffer.writeln(
-        "Future<void> updateCustom(" + metaClass.className + " " + metaClass.instanceName + ", String where, List<String> ignore, Batch batch) async {");
+        "Future<void> updateCustom(" + metaClass.className + " " + metaClass.instanceName + ", String where, List<String> ignore, Batch? batch) async {");
     stringBuffer.writeln("String columnChanges = \"\";");
     stringBuffer.writeln("bool hadBefore = false;");
     metaClass.listFields.forEach((metaField) {
