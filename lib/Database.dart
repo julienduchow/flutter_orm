@@ -106,7 +106,7 @@ abstract class Database {
     await innerDatabase!.transaction(() async => await callback.call(connection));
   }
 
-  Future<void> batch(Future<void> Function(Batch) callback, DbConnection connection) async {
+  Future<void> batch(Future<void> Function(Batch) callback) async {
     await innerDatabase!.batch((b) async => await callback.call(b));
   }
 
