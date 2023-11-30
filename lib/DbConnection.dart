@@ -44,14 +44,14 @@ class DbConnection {
   Future<List<int>> executeForIntList(String sqlQuery) async {
     List<QueryResultRow> rs = await database.executeQuery(sqlQuery);
     List<int> list = [];
-    rs.forEach((e) => list.add(e.data.values.first));
+    rs.forEach((e) { if(e.data.values.first != null) list.add(e.data.values.first);});
     return list;
   }
 
   Future<List<String>> executeForStringList(String sqlQuery) async {
     List<QueryResultRow> rs = await database.executeQuery(sqlQuery);
     List<String> list = [];
-    rs.forEach((e) => list.add(e.data.values.first));
+    rs.forEach((e) { if(e.data.values.first != null) list.add(e.data.values.first);});
     return list;
   }
 
