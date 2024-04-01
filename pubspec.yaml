@@ -13,3 +13,5 @@ dependencies:
   build: ^2.4.1
   source_gen: ^1.5.0
   sqlite3: ^2.4.0
+dependency_overrides:
+  js: ">=0.7.1"
