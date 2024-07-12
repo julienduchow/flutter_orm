@@ -91,7 +91,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
             "']" +
             ", '" +
             metaField.fieldType +
-            "');");
+            "') as " + metaField.fieldType + ";");
       }
       stringBuffer.writeln("}");
     });
@@ -215,7 +215,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
             metaClass.instanceName +
             "." +
             metaField.fieldName +
-            ", '" +
+            "!, '" +
             metaField.fieldType +
             "')" +
             metaField.columnType.convertToSqlPost +
@@ -263,7 +263,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
             metaClass.instanceName +
             "." +
             metaField.fieldName +
-            ", '" +
+            "!, '" +
             metaField.fieldType +
             "')" +
             metaField.columnType.convertToSqlPost +
@@ -340,7 +340,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
             metaClass.instanceName +
             "." +
             metaField.fieldName +
-            ", '" +
+            "!, '" +
             metaField.fieldType +
             "')" +
             metaField.columnType.convertToSqlPost +
