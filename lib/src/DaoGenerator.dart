@@ -401,7 +401,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
       field.metadata.forEach((element) {
         if (element.element.toString() == 'longText longText()') metaField.columnType = ColumnType("TEXT", convertToSqlPre: "\"'\" + ", convertToSqlPost: " + \"'\"");
       });
-      //if (metaField.columnType.typeName == 'TEXT') metaField.isCustom = true;
+      metaField.isCustom = metaField.columnType.isCustom;
       field.metadata.forEach((element) {
         //print(element.element.toString());
         if (element.element.toString() == "id id()") {
@@ -448,7 +448,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
       return ColumnType("BIGINT", convertToSqlPost: ".inMilliseconds.toString()", convertToObjectPre: "Duration(milliseconds:(", convertToObjectPost: "))");
     } else {
       print('Its nothing');
-      return ColumnType("TEXT", convertToSqlPre: "\"'\" + ", convertToSqlPost: " + \"'\"");
+      return ColumnType("TEXT", convertToSqlPre: "\"'\" + ", convertToSqlPost: " + \"'\"", isCustom: true);
     }
   }
 }
@@ -474,7 +474,7 @@ class MetaField {
 
 class ColumnType {
   ColumnType(this.typeName,
-      {this.createExtension = "", this.convertToSqlPre = "", this.convertToSqlPost = "", this.convertToObjectPre = "", this.convertToObjectPost = ""});
+      {this.createExtension = "", this.convertToSqlPre = "", this.convertToSqlPost = "", this.convertToObjectPre = "", this.convertToObjectPost = "", this.isCustom = false});
 
   String typeName;
   String createExtension;
@@ -482,4 +482,5 @@ class ColumnType {
   String convertToSqlPost;
   String convertToObjectPre;
   String convertToObjectPost;
+  bool isCustom = false;
 }
