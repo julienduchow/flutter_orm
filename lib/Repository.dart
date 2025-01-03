@@ -17,7 +17,7 @@ abstract class Repository<E> {
   }
 
   Future<E?> queryById(var id, {String join = ""}) async {
-    QueryResultRow? queryRow = await getDaoInstance(dbConnection).queryById(id, join);
+    QueryResultRow? queryRow = await getDaoInstance(dbConnection).queryById(id, join: join);
     if(queryRow == null) return null;
     E entity = getDaoInstance(dbConnection).queryRowTo(queryRow);
     return entity;
@@ -66,7 +66,7 @@ abstract class Repository<E> {
   onDeleteDeep(E entity) async {}
 
   Future<E?> queryByIdDeep(var id) async {
-    QueryResultRow? queryRow = await getDaoInstance(dbConnection).queryById(id, getDeepJoinStr());
+    QueryResultRow? queryRow = await getDaoInstance(dbConnection).queryById(id, join: getDeepJoinStr());
     if(queryRow == null) return null;
     E entity = getDaoInstance(dbConnection).queryRowTo(queryRow);
     if (entity != null) await onQueryDeep(entity, queryRow);
