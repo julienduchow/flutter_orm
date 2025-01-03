@@ -6,6 +6,10 @@ class id {
   const id();
 }
 
+class identity {
+  const identity();
+}
+
 class longText {
   const longText();
 }

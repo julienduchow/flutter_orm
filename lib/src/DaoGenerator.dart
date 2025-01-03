@@ -404,7 +404,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
       metaField.isCustom = metaField.columnType.isCustom;
       field.metadata.forEach((element) {
         //print(element.element.toString());
-        if (element.element.toString() == "id id()") {
+        if (element.element.toString() == "id id()" || element.element.toString() == "identity identity()") {
           //print('IS ID!');
           metaField.isId = true;
           metaField.columnType.createExtension = ""; //""" PRIMARY KEY ON CONFLICT REPLACE";
