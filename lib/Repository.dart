@@ -65,6 +65,12 @@ abstract class Repository<E> {
 
   onDeleteDeep(E entity) async {}
 
+  beforeInsertDeep(E entity) async {}
+
+  beforeUpdateDeep(E entity) async {}
+
+  beforeDeleteDeep(E entity) async {}
+
   Future<E?> queryByIdDeep(var id) async {
     QueryResultRow? queryRow = await getDaoInstance(dbConnection).queryById(id, join: getDeepJoinStr());
     if(queryRow == null) return null;
@@ -95,16 +101,19 @@ abstract class Repository<E> {
   }
 
   Future<void> insertDeep(E entity, {Batch? batch}) async {
+    await beforeInsertDeep(entity);
     await getDaoInstance(dbConnection).insert(entity, batch);
     await onInsertDeep(entity);
   }
 
   Future<void> updateDeep(E entity, {Batch? batch}) async {
+    await beforeUpdateDeep(entity);
     await getDaoInstance(dbConnection).update(entity, batch);
     await onUpdateDeep(entity);
   }
 
   Future<void> deleteDeep(E entity) async {
+    await beforeDeleteDeep(entity);
     await getDaoInstance(dbConnection).delete(entity);
     await onDeleteDeep(entity);
   }
