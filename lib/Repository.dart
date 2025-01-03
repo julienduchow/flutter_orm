@@ -16,7 +16,7 @@ abstract class Repository<E> {
     return "";
   }
 
-  Future<E?> queryById(var id, String join) async {
+  Future<E?> queryById(var id, {String join = ""}) async {
     QueryResultRow? queryRow = await getDaoInstance(dbConnection).queryById(id, join);
     if(queryRow == null) return null;
     E entity = getDaoInstance(dbConnection).queryRowTo(queryRow);
