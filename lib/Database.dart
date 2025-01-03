@@ -81,10 +81,18 @@ abstract class Database {
 
   Future<List<QueryResultRow>> executeQuery(String sql) async {
     List<QueryRow> result = await innerDatabase!.customSelect(sql).get();
+
+
+
     List<QueryResultRow> list = [];
     result.forEach((element) {
-      list.add(QueryResultRow(element.data));
+      Map<String, dynamic> map = new Map();
+      for(String str in element.data.keys) {
+        map[str.toLowerCase()] = element.data[str];
+      }
+      list.add(QueryResultRow(map));
     });
+
     return list;
   }
 
