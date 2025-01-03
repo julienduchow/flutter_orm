@@ -45,9 +45,9 @@ abstract class Repository<E> {
   Future<int> queryCount({String? where, String? order, int? limit, int? offset}) async =>
       await getDaoInstance(dbConnection).queryCount(where: where, order: order, limit: limit, offset: offset);
 
-  Future<void> insert(E entity, Batch? batch) async => await getDaoInstance(dbConnection).insert(entity, batch);
+  Future<void> insert(E entity, {Batch? batch}) async => await getDaoInstance(dbConnection).insert(entity, batch);
 
-  Future<void> update(E entity, Batch? batch) async => await getDaoInstance(dbConnection).update(entity, batch);
+  Future<void> update(E entity, {Batch? batch}) async => await getDaoInstance(dbConnection).update(entity, batch);
 
   Future<void> delete(E entity) async => await getDaoInstance(dbConnection).delete(entity);
 
