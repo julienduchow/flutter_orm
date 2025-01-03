@@ -94,12 +94,12 @@ abstract class Repository<E> {
     return list;
   }
 
-  Future<void> insertDeep(E entity, Batch? batch) async {
+  Future<void> insertDeep(E entity, {Batch? batch}) async {
     await getDaoInstance(dbConnection).insert(entity, batch);
     await onInsertDeep(entity);
   }
 
-  Future<void> updateDeep(E entity, Batch? batch) async {
+  Future<void> updateDeep(E entity, {Batch? batch}) async {
     await getDaoInstance(dbConnection).update(entity, batch);
     await onUpdateDeep(entity);
   }
