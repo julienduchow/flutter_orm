@@ -101,7 +101,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
 
   void generateQueryById(MetaClass metaClass, StringBuffer stringBuffer) {
     stringBuffer
-        .writeln("Future<QueryResultRow?> queryById(" + metaClass.listFields.singleWhere((element) => element.isId).fieldType + " id, String join) async {");
+        .writeln("Future<QueryResultRow?> queryById(" + metaClass.listFields.singleWhere((element) => element.isId).fieldType + " id, {String join = \"\"}) async {");
     bool idIsStr = metaClass.listFields.singleWhere((element) => element.isId).fieldType == "String";
     stringBuffer.writeln("List<QueryResultRow> l =  await dbConnection.executeQuery(\"SELECT * FROM " +
         metaClass.tableName +
