@@ -8,11 +8,13 @@ abstract class Database {
   InnerDatabase? innerDatabase;
   int? _version;
   String? _name;
+  late bool _useOldPath;
 
   Database() {
     DbConfig config = getConfig();
     this._version = config._version;
     this._name = config._name;
+    this._useOldPath = config.useOldPath;
     //this._isDefault = config._isDefault;
   }
 
@@ -70,7 +72,7 @@ abstract class Database {
             //print("Before Open Database...");
             /* Nothing? */
           },
-        ));
+        ), useOldPath: this._useOldPath);
     // to trigger creation/update process*/
     await getConnection().executeQuery("SELECT 1");
   }
@@ -122,8 +124,9 @@ class DbConfig {
 
   String _name;
   bool _isDefault;
+  bool useOldPath;
 
-  DbConfig(this._version, this._name, this._isDefault);
+  DbConfig(this._version, this._name, this._isDefault, {this.useOldPath = false});
 }
 
 class QueryResultRow {

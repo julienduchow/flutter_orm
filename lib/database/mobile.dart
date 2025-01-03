@@ -10,13 +10,26 @@ import 'package:path/path.dart' as p;
 
 import '../InnerDatabase.dart';
 
-Future<DriftIsolate> _createMoorIsolate(String dbName) async {
+Future<DriftIsolate> _createMoorIsolate(String dbName, bool useOldPath) async {
   // this method is called from the main isolate. Since we can't use
   // getApplicationDocumentsDirectory on a background isolate, we calculate
   // the database path in the foreground isolate and then inform the
   // background isolate about the path.
-  final dir = await paths.getApplicationDocumentsDirectory();
-  final path = p.join(dir.path, dbName);
+  var path = "";
+  if(useOldPath) {
+    // for Pro Darts
+    final dir = await paths.getApplicationDocumentsDirectory();
+    final dir2 = Directory(dir.path + "/databases");
+    if(Platform.isAndroid) {
+      if (!await dir2.exists()) {
+        await dir2.create(recursive: true);
+      }
+    }
+    path = Platform.isIOS ? p.join(dir.path, dbName) : p.join(dir.path.replaceAll("/app_flutter", "/databases"), dbName);
+  } else {
+    final dir = await paths.getApplicationDocumentsDirectory();
+    path = p.join(dir.path, dbName);
+  }
   final receivePort = ReceivePort();
 
   await Isolate.spawn(
@@ -59,14 +72,14 @@ class MyQueryExecutorUser extends QueryExecutorUser {
   }
 }
 
-Future<InnerDatabase> constructDb(String name, int dbVersion, MigrationStrategy migrationStrategy, {bool logStatements = false}) async {
+Future<InnerDatabase> constructDb(String name, int dbVersion, MigrationStrategy migrationStrategy, {bool logStatements = false, bool useOldPath = false}) async {
   if (Platform.isIOS || Platform.isAndroid) {
     /*final executor = LazyDatabase(() async {
       final dataDir = await paths.getApplicationDocumentsDirectory();
       final dbFile = File(p.join(dataDir.path, name + '.sqlite'));
       return VmDatabase(dbFile, logStatements: logStatements);
     });*/
-    DriftIsolate isolate = await _createMoorIsolate(name);
+    DriftIsolate isolate = await _createMoorIsolate(name, useOldPath);
     DatabaseConnection connection = await isolate.connect();
     await connection.executor.ensureOpen(MyQueryExecutorUser());
     return InnerDatabase(connection.executor, dbVersion, migrationStrategy);
