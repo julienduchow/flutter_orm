@@ -4,7 +4,7 @@ import 'package:drift/drift.dart';
 abstract class Dao<E> {
   String getTableName();
   E queryRowTo(QueryResultRow queryRow);
-  Future<QueryResultRow?> queryById(int id, String join);
+  Future<QueryResultRow?> queryById(var id, String join);
   Future<QueryResultRow?> queryOne(String where, String? join, String? order);
   Future<int> queryCount({String? where, String? order, int? limit, int? offset});
   Future<List<QueryResultRow>> queryAll({String? where, String? order, int? limit, int? offset, String? join});
