@@ -55,6 +55,10 @@ class DbConnection {
     return list;
   }
 
+  createNewId() {
+    return database.createNewId;
+  }
+
 }
 
 class DatabaseWithSql {

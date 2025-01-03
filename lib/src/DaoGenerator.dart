@@ -101,7 +101,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
 
   void generateQueryById(MetaClass metaClass, StringBuffer stringBuffer) {
     stringBuffer
-        .writeln("Future<QueryResultRow?> queryById(" + metaClass.listFields.singleWhere((element) => element.isId).fieldType + " id, {String join = \"\"}) async {");
+        .writeln("Future<QueryResultRow?> queryById(var id, {String join = \"\"}) async {");
     bool idIsStr = metaClass.listFields.singleWhere((element) => element.isId).fieldType == "String";
     stringBuffer.writeln("List<QueryResultRow> l =  await dbConnection.executeQuery(\"SELECT * FROM " +
         metaClass.tableName +
@@ -188,7 +188,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
     stringBuffer.writeln("Future<void> insert(" + metaClass.className + " " + metaClass.instanceName + ", Batch? batch) async {");
     stringBuffer.writeln("if(" + metaClass.instanceName + "." + metaClass.listFields.firstWhere((element) => element.isId).fieldName + " == null) {");
     stringBuffer
-        .writeln(metaClass.instanceName + "." + metaClass.listFields.firstWhere((element) => element.isId).fieldName + " = new Random().nextInt(4294967296);");
+        .writeln(metaClass.instanceName + "." + metaClass.listFields.firstWhere((element) => element.isId).fieldName + " = dbConnection.createNewId();");
     stringBuffer.writeln("}");
     stringBuffer.writeln("String columnNames = \"\";");
     stringBuffer.writeln("String columnValues = \"\";");

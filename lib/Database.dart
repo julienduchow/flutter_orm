@@ -22,6 +22,8 @@ abstract class Database {
 
   void onCreate();
 
+  createNewId();
+
   void onUpdate(int from, int to);
 
   List<FieldConverter> getListConverters();
