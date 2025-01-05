@@ -20,11 +20,11 @@ abstract class Database {
 
   DbConfig getConfig();
 
-  void onCreate();
+  Future<void> onCreate();
 
   createNewId();
 
-  void onUpdate(int from, int to);
+  Future<void> onUpdate(int from, int to);
 
   List<FieldConverter> getListConverters();
 
@@ -63,12 +63,11 @@ abstract class Database {
         MigrationStrategy(
           onCreate: (Migrator m) {
             print("Creating Database...");
-            onCreate();
-            return Future(() => null);
+            return onCreate();
           },
           onUpgrade: (Migrator m, int from, int to) async {
             print("Updating Database from $from to $to...");
-            onUpdate(from, to);
+            return onUpdate(from, to);
           },
           beforeOpen: (details) async {
             //print("Before Open Database...");
