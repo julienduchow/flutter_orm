@@ -61,13 +61,13 @@ abstract class Database {
         _name!,
         _version!,
         MigrationStrategy(
-          onCreate: (Migrator m) {
+          onCreate: (Migrator m) async {
             print("Creating Database...");
-            return onCreate();
+            await onCreate();
           },
           onUpgrade: (Migrator m, int from, int to) async {
             print("Updating Database from $from to $to...");
-            return onUpdate(from, to);
+            await onUpdate(from, to);
           },
           beforeOpen: (details) async {
             //print("Before Open Database...");
