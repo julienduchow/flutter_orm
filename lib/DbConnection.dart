@@ -59,6 +59,14 @@ class DbConnection {
     return database.createNewId;
   }
 
+  String getTableName(String className) {
+    return database.getTableName(className);
+  }
+
+  String getColumnName(String className, String fieldName) {
+    return database.getColumnName(className, fieldName);
+  }
+
 }
 
 class DatabaseWithSql {

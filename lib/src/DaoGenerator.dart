@@ -48,16 +48,16 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
 
   void generateTableName(MetaClass metaClass, StringBuffer stringBuffer) {
     stringBuffer.writeln("String getTableName() {");
-    stringBuffer.write("return '" + metaClass.tableName + "';");
+    stringBuffer.write("return '" + "dbConnection.getTableName(\"" + metaClass.className + "\")" + "';");
     stringBuffer.writeln("}");
     stringBuffer.writeln("");
   }
 
   void generateCreateTableSql(MetaClass metaClass, StringBuffer stringBuffer) {
     stringBuffer.writeln("static String getCreateTableSql() {");
-    stringBuffer.write("return \"CREATE TABLE IF NOT EXISTS " + metaClass.tableName + " (");
+    stringBuffer.write("return \"CREATE TABLE IF NOT EXISTS " + "dbConnection.getTableName(\"" + metaClass.className + "\")" + " (");
     metaClass.listFields.forEach((metaField) {
-      stringBuffer.write(metaField.columnName + " " + metaField.columnType.typeName + metaField.columnType.createExtension);
+      stringBuffer.write("dbConnection.getColumnName(\"" + metaClass.className + "\", \"" + metaField.fieldName + "\")" + " " + metaField.columnType.typeName + metaField.columnType.createExtension);
       stringBuffer.write(metaField == metaClass.listFields.last ? ")\";" : ", ");
     });
     stringBuffer.writeln("");
@@ -69,7 +69,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
     stringBuffer.writeln(metaClass.className + " queryRowTo(QueryResultRow queryRow) {");
     stringBuffer.writeln(metaClass.className + " " + metaClass.instanceName + " = " + metaClass.className + "();");
     metaClass.listFields.forEach((metaField) {
-      stringBuffer.writeln("if(queryRow.data['" + metaField.columnName + "'] != null) {");
+      stringBuffer.writeln("if(queryRow.data['" + "dbConnection.getColumnName(\"" + metaClass.className + "\", \"" + metaField.fieldName + "\")" + "'] != null) {");
       if (!metaField.isCustom) {
         stringBuffer.writeln(metaClass.instanceName +
             "." +
@@ -77,7 +77,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
             " = " +
             metaField.columnType.convertToObjectPre +
             "queryRow.data['" +
-            metaField.columnName +
+            "dbConnection.getColumnName(\"" + metaClass.className + "\", \"" + metaField.fieldName + "\")" +
             "']" +
             metaField.columnType.convertToObjectPost +
             ";");
@@ -87,7 +87,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
             metaField.fieldName +
             " = dbConnection.getObjectFromCustomType(" +
             "queryRow.data['" +
-            metaField.columnName +
+            "dbConnection.getColumnName(\"" + metaClass.className + "\", \"" + metaField.fieldName + "\")" +
             "']" +
             ", '" +
             metaField.fieldType +
@@ -104,9 +104,9 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
         .writeln("Future<QueryResultRow?> queryById(var id, {String join = \"\"}) async {");
     bool idIsStr = metaClass.listFields.singleWhere((element) => element.isId).fieldType == "String";
     stringBuffer.writeln("List<QueryResultRow> l =  await dbConnection.executeQuery(\"SELECT * FROM " +
-        metaClass.tableName +
+        "dbConnection.getTableName(\"" + metaClass.className + "\")" +
         " \" + join + \" WHERE " +
-        metaClass.listFields.firstWhere((element) => element.isId).columnName +
+        "dbConnection.getColumnName(\"" + metaClass.className + "\", \"" + metaClass.listFields.firstWhere((element) => element.isId).fieldName + "\")" +
         " = " +
         (idIsStr ? "'" : "") +
         "\" + id.toString()" +
@@ -118,7 +118,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
 
   void generateQueryAll(MetaClass metaClass, StringBuffer stringBuffer) {
     stringBuffer.writeln("Future<List<QueryResultRow>> queryAll({String? where, String? order, int? limit, int? offset, String? join}) async {");
-    stringBuffer.writeln("String sqlStr = \"SELECT * FROM " + metaClass.tableName + "\";");
+    stringBuffer.writeln("String sqlStr = \"SELECT * FROM " + "dbConnection.getTableName(\"" + metaClass.className + "\")" + "\";");
     stringBuffer.writeln("if(join != null) {");
     stringBuffer.writeln("sqlStr += \" \" + join!;");
     stringBuffer.writeln("}");
@@ -142,7 +142,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
 
   void generateQueryOne(MetaClass metaClass, StringBuffer stringBuffer) {
     stringBuffer.writeln("Future<QueryResultRow?> queryOne(String where, String? join, String? order) async {");
-    stringBuffer.writeln("String sqlStr = \"SELECT * FROM " + metaClass.tableName + "\";");
+    stringBuffer.writeln("String sqlStr = \"SELECT * FROM " + "dbConnection.getTableName(\"" + metaClass.className + "\")" + "\";");
     stringBuffer.writeln("if(join != null) {");
     stringBuffer.writeln("sqlStr += \" \" + join!;");
     stringBuffer.writeln("}");
@@ -160,7 +160,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
 
   void generateQueryCount(MetaClass metaClass, StringBuffer stringBuffer) {
     stringBuffer.writeln("Future<int> queryCount({String? where, String? order, int? limit, int? offset, String? join}) async {");
-    stringBuffer.writeln("String sqlStr = \"SELECT COUNT(*) FROM " + metaClass.tableName + "\";");
+    stringBuffer.writeln("String sqlStr = \"SELECT COUNT(*) FROM " + "dbConnection.getTableName(\"" + metaClass.className + "\")" + "\";");
     stringBuffer.writeln("if(join != null) {");
     stringBuffer.writeln("sqlStr += \" \" + join;");
     stringBuffer.writeln("}");
@@ -198,7 +198,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
       stringBuffer.writeln("if(hadBefore) columnNames += \", \";");
       stringBuffer.writeln("if(hadBefore) columnValues += \", \";");
       stringBuffer.writeln("hadBefore = true;");
-      stringBuffer.writeln("columnNames += \"" + metaField.columnName + "\";");
+      stringBuffer.writeln("columnNames += \"" + "dbConnection.getColumnName(\"" + metaClass.className + "\", \"" + metaField.fieldName + "\")" + "\";");
       if (!metaField.isCustom) {
         stringBuffer.writeln("columnValues += " +
             metaField.columnType.convertToSqlPre +
@@ -225,10 +225,10 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
     });
     stringBuffer.writeln("if(batch == null) {");
     stringBuffer.writeln(
-        "return await dbConnection.executeUpdate(\"INSERT INTO " + metaClass.tableName + " (\" +" + "columnNames + \") VALUES (\" + columnValues + \")\");");
+        "return await dbConnection.executeUpdate(\"INSERT INTO " + "dbConnection.getTableName(\"" + metaClass.className + "\")" + " (\" +" + "columnNames + \") VALUES (\" + columnValues + \")\");");
     stringBuffer.writeln("} else {");
     stringBuffer.writeln(
-        "batch.customStatement(\"INSERT INTO " + metaClass.tableName + " (\" +" + "columnNames + \") VALUES (\" + columnValues + \")\");");
+        "batch.customStatement(\"INSERT INTO " + "dbConnection.getTableName(\"" + metaClass.className + "\")" + " (\" +" + "columnNames + \") VALUES (\" + columnValues + \")\");");
     stringBuffer.writeln("return Future(() => null);");
     stringBuffer.writeln("}");
 
@@ -246,7 +246,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
       stringBuffer.writeln("hadBefore = true;");
       if (!metaField.isCustom) {
         stringBuffer.writeln("columnChanges += \"" +
-            metaField.columnName +
+            "dbConnection.getColumnName(\"" + metaClass.className + "\", \"" + metaField.fieldName + "\")" +
             " = \" + " +
             metaField.columnType.convertToSqlPre +
             metaClass.instanceName +
@@ -256,7 +256,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
             ";");
       } else {
         stringBuffer.writeln("columnChanges += \"" +
-            metaField.columnName +
+            "dbConnection.getColumnName(\"" + metaClass.className + "\", \"" + metaField.fieldName + "\")" +
             " = \" + " +
             metaField.columnType.convertToSqlPre +
             "dbConnection.getSqlFromCustomType(" +
@@ -275,11 +275,11 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
 
     stringBuffer.writeln("if(batch == null) {");
     stringBuffer.writeln("return await dbConnection.executeUpdate(\"UPDATE " +
-        metaClass.tableName +
+        "dbConnection.getTableName(\"" + metaClass.className + "\")" +
         " SET \" +" +
         "columnChanges" +
         " + \" WHERE " +
-        metaClass.listFields.firstWhere((element) => element.isId).columnName +
+        "dbConnection.getColumnName(\"" + metaClass.className + "\", \"" + metaClass.listFields.firstWhere((element) => element.isId).fieldName + "\")" +
         " = " +
         (idIsStr ? "'" : "") +
         "\" + " +
@@ -291,11 +291,11 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
         ");");
     stringBuffer.writeln("} else {");
     stringBuffer.writeln("batch.customStatement(\"UPDATE " +
-        metaClass.tableName +
+        "dbConnection.getTableName(\"" + metaClass.className + "\")" +
         " SET \" +" +
         "columnChanges" +
         " + \" WHERE " +
-        metaClass.listFields.firstWhere((element) => element.isId).columnName +
+        "dbConnection.getColumnName(\"" + metaClass.className + "\", \"" + metaClass.listFields.firstWhere((element) => element.isId).fieldName + "\")" +
         " = " +
         (idIsStr ? "'" : "") +
         "\" + " +
@@ -323,7 +323,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
       stringBuffer.writeln("hadBefore = true;");
       if (!metaField.isCustom) {
         stringBuffer.writeln("columnChanges += \"" +
-            metaField.columnName +
+            "dbConnection.getColumnName(\"" + metaClass.className + "\", \"" + metaField.fieldName + "\")" +
             " = \" + " +
             metaField.columnType.convertToSqlPre +
             metaClass.instanceName +
@@ -333,7 +333,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
             ";");
       } else {
         stringBuffer.writeln("columnChanges += \"" +
-            metaField.columnName +
+            "dbConnection.getColumnName(\"" + metaClass.className + "\", \"" + metaField.fieldName + "\")" +
             " = \" + " +
             metaField.columnType.convertToSqlPre +
             "dbConnection.getSqlFromCustomType(" +
@@ -351,9 +351,9 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
 
     stringBuffer.writeln("if(batch == null) {");
     stringBuffer
-        .writeln("return await dbConnection.executeUpdate(\"UPDATE " + metaClass.tableName + " SET \" +" + "columnChanges" + " + \" WHERE \" + where);");
+        .writeln("return await dbConnection.executeUpdate(\"UPDATE " + "dbConnection.getTableName(\"" + metaClass.className + "\")" + " SET \" +" + "columnChanges" + " + \" WHERE \" + where);");
     stringBuffer.writeln("} else {");
-    stringBuffer.writeln("batch.customStatement(\"UPDATE " + metaClass.tableName + " SET \" +" + "columnChanges" + " + \" WHERE \" + where);");
+    stringBuffer.writeln("batch.customStatement(\"UPDATE " + "dbConnection.getTableName(\"" + metaClass.className + "\")" + " SET \" +" + "columnChanges" + " + \" WHERE \" + where);");
     stringBuffer.writeln("return Future(() => null);");
     stringBuffer.writeln("}");
 
@@ -364,9 +364,9 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
   void generateDelete(MetaClass metaClass, StringBuffer stringBuffer) {
     stringBuffer.writeln("Future<void> delete(" + metaClass.className + " " + metaClass.instanceName + ") async {");
     stringBuffer.writeln("return await dbConnection.executeUpdate(\"DELETE FROM " +
-        metaClass.tableName +
+        "dbConnection.getTableName(\"" + metaClass.className + "\")" +
         " WHERE " +
-        metaClass.listFields.firstWhere((element) => element.isId).columnName +
+        "dbConnection.getColumnName(\"" + metaClass.className + "\", \"" + metaClass.listFields.firstWhere((element) => element.isId).fieldName + "\")" +
         " = \" + " +
         metaClass.instanceName +
         "." +
@@ -385,7 +385,6 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
   MetaClass generateMetaData(Element element) {
     MetaClass metaClass = MetaClass(className: element.displayName,
         instanceName: element.displayName.substring(0, 1).toLowerCase() + element.displayName.substring(1),
-    tableName: StringUtils.camelToUnderscoreCase(element.displayName),
         listFields: getFieldsWithSuper(element as ClassElement, StringUtils.camelToUnderscoreCase(element.displayName)));
     return metaClass;
   }
@@ -397,7 +396,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
     }
     clazz.fields.forEach((field) {
       MetaField metaField = MetaField(fieldName: field.displayName, fieldType: field.type.toString().substring(0, field.type.toString().length - 1),
-      columnName: tableName + "_" + StringUtils.camelToUnderscoreCase(field.displayName), columnType: getSqlTypeForDartType(field.type, field));
+      columnType: getSqlTypeForDartType(field.type, field));
       field.metadata.forEach((element) {
         if (element.element.toString() == 'longText longText()') metaField.columnType = ColumnType("TEXT", convertToSqlPre: "\"'\" + ", convertToSqlPost: " + \"'\"");
       });
@@ -456,20 +455,18 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
 class MetaClass {
   String className;
   String instanceName;
-  String tableName;
   List<MetaField> listFields;
-  MetaClass({required this.className, required this.instanceName, required this.tableName, required this.listFields});
+  MetaClass({required this.className, required this.instanceName, required this.listFields});
 }
 
 class MetaField {
   String fieldName;
   String fieldType;
-  String columnName;
   ColumnType columnType;
   bool isId = false;
   bool isCustom = false;
   bool longText = false;
-  MetaField({required this.fieldName, required this.fieldType, required this.columnName, required this.columnType});
+  MetaField({required this.fieldName, required this.fieldType, required this.columnType});
 }
 
 class ColumnType {

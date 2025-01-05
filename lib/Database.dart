@@ -51,6 +51,26 @@ abstract class Database {
     if (this.innerDatabase != null) this.innerDatabase!.close();
   }
 
+  String getTableName(String className) {
+    if(getConfig().useOldColumnNames) {
+      return className;
+    } else {
+      return camelToUnderscoreCase(className);
+    }
+  }
+
+  String getColumnName(String className, String fieldName) {
+    if(getConfig().useOldColumnNames) {
+      return className + "_" + fieldName;
+    } else {
+      return camelToUnderscoreCase(className) + "_" + camelToUnderscoreCase(fieldName);
+    }
+  }
+
+  static String camelToUnderscoreCase(String camelCaseStr) {
+    return camelCaseStr.replaceAllMapped(RegExp(r'(?<=[a-z])[A-Z]'), (Match m) => ('_' + m.group(0)!)).toLowerCase();
+  }
+
   Future<void> init() async {
     //MoorIsolate isolate = await MoorIsolate.spawn(_backgroundConnection);
     //connection = await isolate.connect();
@@ -135,8 +155,9 @@ class DbConfig {
   String _name;
   bool _isDefault;
   bool useOldPath;
+  bool useOldColumnNames;
 
-  DbConfig(this._version, this._name, this._isDefault, {this.useOldPath = false});
+  DbConfig(this._version, this._name, this._isDefault, {this.useOldPath = false, this.useOldColumnNames = false});
 }
 
 class QueryResultRow {
