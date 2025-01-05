@@ -75,6 +75,7 @@ abstract class Database {
           },
         ), useOldPath: this._useOldPath);
     // to trigger creation/update process*/
+    await onCreate();
     await getConnection().executeQuery("SELECT 1");
   }
 
