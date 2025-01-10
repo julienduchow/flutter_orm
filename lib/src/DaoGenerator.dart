@@ -228,7 +228,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
         "return await dbConnection.executeUpdate(\"INSERT INTO " + "\" + " + "dbConnection.getTableName(\"" + metaClass.className + "\")" + " + \" (\" +" + "columnNames + \") VALUES (\" + columnValues + \")\");");
     stringBuffer.writeln("} else {");
     stringBuffer.writeln(
-        "batch.customStatement(\"INSERT INTO " + "\" + " + "dbConnection.getTableName(\"" + metaClass.className + "\")" + " \" + (\" +" + "columnNames + \") VALUES (\" + columnValues + \")\");");
+        "batch.customStatement(\"INSERT INTO " + "\" + " + "dbConnection.getTableName(\"" + metaClass.className + "\")" + " + \" (\" +" + "columnNames + \") VALUES (\" + columnValues + \")\");");
     stringBuffer.writeln("return Future(() => null);");
     stringBuffer.writeln("}");
 
