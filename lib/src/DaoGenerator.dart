@@ -22,9 +22,9 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
     generateQueryOne(metaClass, stringBuffer);
     generateQueryCount(metaClass, stringBuffer);
     generateInsert(metaClass, stringBuffer);
-    //generateUpdate(metaClass, stringBuffer);
+    generateUpdate(metaClass, stringBuffer);
     //generateCustomUpdate(metaClass, stringBuffer);
-    //generateDelete(metaClass, stringBuffer);
+    generateDelete(metaClass, stringBuffer);
     generateFooter(metaClass, stringBuffer);
 
     return stringBuffer.toString();
@@ -245,9 +245,9 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
       stringBuffer.writeln("if(hadBefore) columnChanges += \", \";");
       stringBuffer.writeln("hadBefore = true;");
       if (!metaField.isCustom) {
-        stringBuffer.writeln("columnChanges += \"" +
+        stringBuffer.writeln("columnChanges += " +
             "dbConnection.getColumnName(\"" + metaClass.className + "\", \"" + metaField.fieldName + "\")" +
-            " = \" + " +
+            " + \" = \" + " +
             metaField.columnType.convertToSqlPre +
             metaClass.instanceName +
             "." +
@@ -255,9 +255,9 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
             metaField.columnType.convertToSqlPost +
             ";");
       } else {
-        stringBuffer.writeln("columnChanges += \"" +
+        stringBuffer.writeln("columnChanges += " +
             "dbConnection.getColumnName(\"" + metaClass.className + "\", \"" + metaField.fieldName + "\")" +
-            " = \" + " +
+            " + \" = \" + " +
             metaField.columnType.convertToSqlPre +
             "dbConnection.getSqlFromCustomType(" +
             metaClass.instanceName +
@@ -274,13 +274,13 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
     bool idIsStr = metaClass.listFields.singleWhere((element) => element.isId).fieldType == "String";
 
     stringBuffer.writeln("if(batch == null) {");
-    stringBuffer.writeln("return await dbConnection.executeUpdate(\"UPDATE " +
+    stringBuffer.writeln("return await dbConnection.executeUpdate(\"UPDATE \" + " +
         "dbConnection.getTableName(\"" + metaClass.className + "\")" +
-        " SET \" +" +
+        " + \" SET \" +" +
         "columnChanges" +
-        " + \" WHERE " +
+        " + \" WHERE \" + " +
         "dbConnection.getColumnName(\"" + metaClass.className + "\", \"" + metaClass.listFields.firstWhere((element) => element.isId).fieldName + "\")" +
-        " = " +
+        " + \" = " +
         (idIsStr ? "'" : "") +
         "\" + " +
         metaClass.instanceName +
@@ -290,13 +290,13 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
         (idIsStr ? "+\"'\"" : "") +
         ");");
     stringBuffer.writeln("} else {");
-    stringBuffer.writeln("batch.customStatement(\"UPDATE " +
+    stringBuffer.writeln("batch.customStatement(\"UPDATE \" + " +
         "dbConnection.getTableName(\"" + metaClass.className + "\")" +
-        " SET \" +" +
+        " + \" SET \" +" +
         "columnChanges" +
-        " + \" WHERE " +
+        " + \" WHERE \" + " +
         "dbConnection.getColumnName(\"" + metaClass.className + "\", \"" + metaClass.listFields.firstWhere((element) => element.isId).fieldName + "\")" +
-        " = " +
+        " + \" = " +
         (idIsStr ? "'" : "") +
         "\" + " +
         metaClass.instanceName +
@@ -363,11 +363,11 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
 
   void generateDelete(MetaClass metaClass, StringBuffer stringBuffer) {
     stringBuffer.writeln("Future<void> delete(" + metaClass.className + " " + metaClass.instanceName + ") async {");
-    stringBuffer.writeln("return await dbConnection.executeUpdate(\"DELETE FROM " +
+    stringBuffer.writeln("return await dbConnection.executeUpdate(\"DELETE FROM \" + " +
         "dbConnection.getTableName(\"" + metaClass.className + "\")" +
-        " WHERE " +
+        " + \" WHERE \" + " +
         "dbConnection.getColumnName(\"" + metaClass.className + "\", \"" + metaClass.listFields.firstWhere((element) => element.isId).fieldName + "\")" +
-        " = \" + " +
+        " + \" = \" + " +
         metaClass.instanceName +
         "." +
         metaClass.listFields.firstWhere((element) => element.isId).fieldName +
