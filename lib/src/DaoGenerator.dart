@@ -23,7 +23,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
     generateQueryCount(metaClass, stringBuffer);
     generateInsert(metaClass, stringBuffer);
     generateUpdate(metaClass, stringBuffer);
-    //generateCustomUpdate(metaClass, stringBuffer);
+    generateCustomUpdate(metaClass, stringBuffer);
     generateDelete(metaClass, stringBuffer);
     generateFooter(metaClass, stringBuffer);
 
@@ -193,10 +193,13 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
     stringBuffer.writeln("String columnNames = \"\";");
     stringBuffer.writeln("String columnValues = \"\";");
     stringBuffer.writeln("bool hadBefore = false;");
+    bool isFirst = true;
     metaClass.listFields.forEach((metaField) {
       stringBuffer.writeln("if(" + metaClass.instanceName + "." + metaField.fieldName + " != null ) {");
-      stringBuffer.writeln("if(hadBefore) columnNames += \", \";");
-      stringBuffer.writeln("if(hadBefore) columnValues += \", \";");
+      if(!isFirst) {
+        stringBuffer.writeln("if(hadBefore) columnNames += \", \";");
+        stringBuffer.writeln("if(hadBefore) columnValues += \", \";");
+      }
       stringBuffer.writeln("hadBefore = true;");
       stringBuffer.writeln("columnNames += dbConnection.getColumnName(\"" + metaClass.className + "\", \"" + metaField.fieldName + "\")" + ";");
       if (!metaField.isCustom) {
@@ -222,6 +225,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
             ";");
         stringBuffer.writeln("}");
       }
+      isFirst = false;
     });
     stringBuffer.writeln("if(batch == null) {");
     stringBuffer.writeln(
@@ -240,9 +244,12 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
     stringBuffer.writeln("Future<void> update(" + metaClass.className + " " + metaClass.instanceName + ", Batch? batch) async {");
     stringBuffer.writeln("String columnChanges = \"\";");
     stringBuffer.writeln("bool hadBefore = false;");
+    bool isFirst = true;
     metaClass.listFields.forEach((metaField) {
       stringBuffer.writeln("if(" + metaClass.instanceName + "." + metaField.fieldName + " != null ) {");
-      stringBuffer.writeln("if(hadBefore) columnChanges += \", \";");
+      if(!isFirst) {
+        stringBuffer.writeln("if(hadBefore) columnChanges += \", \";");
+      }
       stringBuffer.writeln("hadBefore = true;");
       if (!metaField.isCustom) {
         stringBuffer.writeln("columnChanges += " +
@@ -270,6 +277,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
             ";");
       }
       stringBuffer.writeln("}");
+      isFirst = false;
     });
     bool idIsStr = metaClass.listFields.singleWhere((element) => element.isId).fieldType == "String";
 
@@ -317,14 +325,17 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
         "Future<void> updateCustom(" + metaClass.className + " " + metaClass.instanceName + ", String where, List<String> ignore, Batch? batch) async {");
     stringBuffer.writeln("String columnChanges = \"\";");
     stringBuffer.writeln("bool hadBefore = false;");
+    bool isFirst = true;
     metaClass.listFields.forEach((metaField) {
       stringBuffer.writeln("if(" + metaClass.instanceName + "." + metaField.fieldName + " != null && !ignore.any((e) => e=='" + metaField.fieldName + "')) {");
-      stringBuffer.writeln("if(hadBefore) columnChanges += \", \";");
+      if(!isFirst) {
+        stringBuffer.writeln("if(hadBefore) columnChanges += \", \";");
+      }
       stringBuffer.writeln("hadBefore = true;");
       if (!metaField.isCustom) {
-        stringBuffer.writeln("columnChanges += \"" +
+        stringBuffer.writeln("columnChanges += " +
             "dbConnection.getColumnName(\"" + metaClass.className + "\", \"" + metaField.fieldName + "\")" +
-            " = \" + " +
+            " + \" = \" + " +
             metaField.columnType.convertToSqlPre +
             metaClass.instanceName +
             "." +
@@ -332,9 +343,9 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
             metaField.columnType.convertToSqlPost +
             ";");
       } else {
-        stringBuffer.writeln("columnChanges += \"" +
+        stringBuffer.writeln("columnChanges += " +
             "dbConnection.getColumnName(\"" + metaClass.className + "\", \"" + metaField.fieldName + "\")" +
-            " = \" + " +
+            " + \" = \" + " +
             metaField.columnType.convertToSqlPre +
             "dbConnection.getSqlFromCustomType(" +
             metaClass.instanceName +
@@ -347,13 +358,14 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
             ";");
       }
       stringBuffer.writeln("}");
+      isFirst = false;
     });
 
     stringBuffer.writeln("if(batch == null) {");
     stringBuffer
-        .writeln("return await dbConnection.executeUpdate(\"UPDATE " + "dbConnection.getTableName(\"" + metaClass.className + "\")" + " SET \" +" + "columnChanges" + " + \" WHERE \" + where);");
+        .writeln("return await dbConnection.executeUpdate(\"UPDATE \" + " + "dbConnection.getTableName(\"" + metaClass.className + "\")" + " + \" SET \" +" + "columnChanges" + " + \" WHERE \" + where);");
     stringBuffer.writeln("} else {");
-    stringBuffer.writeln("batch.customStatement(\"UPDATE " + "dbConnection.getTableName(\"" + metaClass.className + "\")" + " SET \" +" + "columnChanges" + " + \" WHERE \" + where);");
+    stringBuffer.writeln("batch.customStatement(\"UPDATE \" + " + "dbConnection.getTableName(\"" + metaClass.className + "\")" + " + \" SET \" +" + "columnChanges" + " + \" WHERE \" + where);");
     stringBuffer.writeln("return Future(() => null);");
     stringBuffer.writeln("}");
 
