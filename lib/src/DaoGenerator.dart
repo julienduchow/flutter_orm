@@ -402,9 +402,9 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
       });
       metaField.isCustom = metaField.columnType.isCustom;
       field.metadata.forEach((element) {
-        //print(element.element.toString());
+        ////print(element.element.toString());
         if (element.element.toString() == "id id()" || element.element.toString() == "identity identity()") {
-          //print('IS ID!');
+          ////print('IS ID!');
           metaField.isId = true;
           metaField.columnType.createExtension = ""; //""" PRIMARY KEY ON CONFLICT REPLACE";
         }
@@ -423,30 +423,30 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
   }
 
   ColumnType getSqlTypeForDartType(DartType dartType, FieldElement field) {
-    print(dartType.toString());
+    //print(dartType.toString());
     if (dartType.toString() == "int?") {
-      //print('Its a INT');
+      ////print('Its a INT');
       return ColumnType("INTEGER", convertToSqlPost: ".toString()");
     } else if (dartType.toString() == "double?") {
-      //print('Its a doub');
+      ////print('Its a doub');
       return ColumnType("REAL", convertToSqlPost: ".toString()");
     } else if (dartType.toString() == "String?") {
-      print('Its a STR');
+      //print('Its a STR');
       return ColumnType("VARCHAR(255)", convertToSqlPre: "\"'\" + ", convertToSqlPost: " + \"'\"");
     } else if (dartType.toString() == "longText? String?") {
-      print('Its a LSTR');
+      //print('Its a LSTR');
       return ColumnType("TEXT", convertToSqlPre: "\"'\" + ", convertToSqlPost: " + \"'\"");
     } else if (dartType.toString() == "bool?") {
       return ColumnType("INT", convertToSqlPost: " ? \"1\" : \"0\")", convertToSqlPre: "(", convertToObjectPost: " == 1");
     } else if (dartType.toString() == "DateTime?") {
-      //print('Its a DT');
+      ////print('Its a DT');
       return ColumnType("BIGINT",
           convertToSqlPost: ".millisecondsSinceEpoch.toString()", convertToObjectPre: "DateTime.fromMillisecondsSinceEpoch(", convertToObjectPost: ")");
     } else if (dartType.toString() == "Duration?") {
-      //print('Its a DT');
+      ////print('Its a DT');
       return ColumnType("BIGINT", convertToSqlPost: ".inMilliseconds.toString()", convertToObjectPre: "Duration(milliseconds:(", convertToObjectPost: "))");
     } else {
-      print('Its nothing');
+      //print('Its nothing');
       return ColumnType("TEXT", convertToSqlPre: "\"'\" + ", convertToSqlPost: " + \"'\"", isCustom: true);
     }
   }
