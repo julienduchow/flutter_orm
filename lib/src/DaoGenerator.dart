@@ -18,9 +18,9 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
     generateCreateTableSql(metaClass, stringBuffer);
     generateQueryRowToEntity(metaClass, stringBuffer);
     generateQueryById(metaClass, stringBuffer);
-    //generateQueryAll(metaClass, stringBuffer);
-    //generateQueryOne(metaClass, stringBuffer);
-    //generateQueryCount(metaClass, stringBuffer);
+    generateQueryAll(metaClass, stringBuffer);
+    generateQueryOne(metaClass, stringBuffer);
+    generateQueryCount(metaClass, stringBuffer);
     //generateInsert(metaClass, stringBuffer);
     //generateUpdate(metaClass, stringBuffer);
     //generateCustomUpdate(metaClass, stringBuffer);
@@ -118,7 +118,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
 
   void generateQueryAll(MetaClass metaClass, StringBuffer stringBuffer) {
     stringBuffer.writeln("Future<List<QueryResultRow>> queryAll({String? where, String? order, int? limit, int? offset, String? join}) async {");
-    stringBuffer.writeln("String sqlStr = \"SELECT * FROM " + "dbConnection.getTableName(\"" + metaClass.className + "\")" + "\";");
+    stringBuffer.writeln("String sqlStr = \"SELECT * FROM " + "\" + " + "dbConnection.getTableName(\"" + metaClass.className + "\")" + ";");
     stringBuffer.writeln("if(join != null) {");
     stringBuffer.writeln("sqlStr += \" \" + join!;");
     stringBuffer.writeln("}");
@@ -142,7 +142,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
 
   void generateQueryOne(MetaClass metaClass, StringBuffer stringBuffer) {
     stringBuffer.writeln("Future<QueryResultRow?> queryOne(String where, String? join, String? order) async {");
-    stringBuffer.writeln("String sqlStr = \"SELECT * FROM " + "dbConnection.getTableName(\"" + metaClass.className + "\")" + "\";");
+    stringBuffer.writeln("String sqlStr = \"SELECT * FROM " + "\" + " "dbConnection.getTableName(\"" + metaClass.className + "\")" + ";");
     stringBuffer.writeln("if(join != null) {");
     stringBuffer.writeln("sqlStr += \" \" + join!;");
     stringBuffer.writeln("}");
@@ -160,7 +160,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
 
   void generateQueryCount(MetaClass metaClass, StringBuffer stringBuffer) {
     stringBuffer.writeln("Future<int> queryCount({String? where, String? order, int? limit, int? offset, String? join}) async {");
-    stringBuffer.writeln("String sqlStr = \"SELECT COUNT(*) FROM " + "dbConnection.getTableName(\"" + metaClass.className + "\")" + "\";");
+    stringBuffer.writeln("String sqlStr = \"SELECT COUNT(*) FROM " + "\" + " + "dbConnection.getTableName(\"" + metaClass.className + "\")" + ";");
     stringBuffer.writeln("if(join != null) {");
     stringBuffer.writeln("sqlStr += \" \" + join;");
     stringBuffer.writeln("}");
