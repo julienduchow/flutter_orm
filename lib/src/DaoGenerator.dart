@@ -17,7 +17,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
     generateTableName(metaClass, stringBuffer);
     generateCreateTableSql(metaClass, stringBuffer);
     generateQueryRowToEntity(metaClass, stringBuffer);
-    //generateQueryById(metaClass, stringBuffer);
+    generateQueryById(metaClass, stringBuffer);
     //generateQueryAll(metaClass, stringBuffer);
     //generateQueryOne(metaClass, stringBuffer);
     //generateQueryCount(metaClass, stringBuffer);
@@ -69,16 +69,16 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
     stringBuffer.writeln(metaClass.className + " queryRowTo(QueryResultRow queryRow) {");
     stringBuffer.writeln(metaClass.className + " " + metaClass.instanceName + " = " + metaClass.className + "();");
     metaClass.listFields.forEach((metaField) {
-      stringBuffer.writeln("if(queryRow.data['" + "dbConnection.getColumnName(\"" + metaClass.className + "\", \"" + metaField.fieldName + "\")" + "'] != null) {");
+      stringBuffer.writeln("if(queryRow.data[" + "dbConnection.getColumnName(\"" + metaClass.className + "\", \"" + metaField.fieldName + "\")" + "] != null) {");
       if (!metaField.isCustom) {
         stringBuffer.writeln(metaClass.instanceName +
             "." +
             metaField.fieldName +
             " = " +
             metaField.columnType.convertToObjectPre +
-            "queryRow.data['" +
+            "queryRow.data[" +
             "dbConnection.getColumnName(\"" + metaClass.className + "\", \"" + metaField.fieldName + "\")" +
-            "']" +
+            "]" +
             metaField.columnType.convertToObjectPost +
             ";");
       } else {
@@ -86,9 +86,9 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
             "." +
             metaField.fieldName +
             " = dbConnection.getObjectFromCustomType(" +
-            "queryRow.data['" +
+            "queryRow.data[" +
             "dbConnection.getColumnName(\"" + metaClass.className + "\", \"" + metaField.fieldName + "\")" +
-            "']" +
+            "]" +
             ", '" +
             metaField.fieldType +
             "') as " + metaField.fieldType + ";");
