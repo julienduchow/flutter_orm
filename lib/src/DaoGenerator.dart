@@ -48,7 +48,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
 
   void generateTableName(MetaClass metaClass, StringBuffer stringBuffer) {
     stringBuffer.writeln("String getTableName() {");
-    stringBuffer.write("return '" + "dbConnection.getTableName(\"" + metaClass.className + "\")" + "';");
+    stringBuffer.write("return " + "dbConnection.getTableName(\"" + metaClass.className + "\")" + ";");
     stringBuffer.writeln("}");
     stringBuffer.writeln("");
   }
