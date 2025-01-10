@@ -427,7 +427,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
           ignore = true;
         }
       });
-      if (metaField.columnType != null && metaField.fieldName != "hashCode" && metaField.fieldName != "runtimeType" && !ignore) {
+      if (metaField.fieldName != "hashCode" && metaField.fieldName != "runtimeType" && !ignore) {
         listFields.add(metaField);
       }
     });
