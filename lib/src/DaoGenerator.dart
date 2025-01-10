@@ -57,7 +57,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
     stringBuffer.writeln("String getCreateTableSql() {");
     stringBuffer.write("return \"CREATE TABLE IF NOT EXISTS " + "\" + " + "dbConnection.getTableName(\"" + metaClass.className + "\")" + " + \"" + " (\" + ");
     metaClass.listFields.forEach((metaField) {
-      stringBuffer.write("dbConnection.getColumnName(\"" + metaClass.className + "\", \"" + metaField.fieldName + "\")" + " + \"" + metaField.columnType.typeName + metaField.columnType.createExtension + "\"");
+      stringBuffer.write("dbConnection.getColumnName(\"" + metaClass.className + "\", \"" + metaField.fieldName + "\")" + " + \" " + metaField.columnType.typeName + metaField.columnType.createExtension + "\"");
       stringBuffer.write(metaField == metaClass.listFields.last ? " + \")\";" : " + \", \" + ");
     });
     stringBuffer.writeln("");
