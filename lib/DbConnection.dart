@@ -56,7 +56,7 @@ class DbConnection {
   }
 
   createNewId() {
-    return database.createNewId;
+    return database.createNewId();
   }
 
   String getTableName(String className) {
