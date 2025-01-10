@@ -21,7 +21,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
     generateQueryAll(metaClass, stringBuffer);
     generateQueryOne(metaClass, stringBuffer);
     generateQueryCount(metaClass, stringBuffer);
-    //generateInsert(metaClass, stringBuffer);
+    generateInsert(metaClass, stringBuffer);
     //generateUpdate(metaClass, stringBuffer);
     //generateCustomUpdate(metaClass, stringBuffer);
     //generateDelete(metaClass, stringBuffer);
@@ -120,19 +120,19 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
     stringBuffer.writeln("Future<List<QueryResultRow>> queryAll({String? where, String? order, int? limit, int? offset, String? join}) async {");
     stringBuffer.writeln("String sqlStr = \"SELECT * FROM " + "\" + " + "dbConnection.getTableName(\"" + metaClass.className + "\")" + ";");
     stringBuffer.writeln("if(join != null) {");
-    stringBuffer.writeln("sqlStr += \" \" + join!;");
+    stringBuffer.writeln("sqlStr += \" \" + join;");
     stringBuffer.writeln("}");
     stringBuffer.writeln("if(where != null) {");
-    stringBuffer.writeln("sqlStr += \" WHERE \" + where!;");
+    stringBuffer.writeln("sqlStr += \" WHERE \" + where;");
     stringBuffer.writeln("}");
     stringBuffer.writeln("if(order != null) {");
-    stringBuffer.writeln("sqlStr += \" ORDER BY \" + order!;");
+    stringBuffer.writeln("sqlStr += \" ORDER BY \" + order;");
     stringBuffer.writeln("}");
     stringBuffer.writeln("if(limit != null) {");
     stringBuffer.writeln("if(offset == null) {");
-    stringBuffer.writeln("sqlStr += \" LIMIT \" + limit!.toString();");
+    stringBuffer.writeln("sqlStr += \" LIMIT \" + limit.toString();");
     stringBuffer.writeln("} else {");
-    stringBuffer.writeln("sqlStr += \" LIMIT \" + offset!.toString() + \",\" + limit!.toString();");
+    stringBuffer.writeln("sqlStr += \" LIMIT \" + offset.toString() + \",\" + limit.toString();");
     stringBuffer.writeln("}");
     stringBuffer.writeln("}");
     stringBuffer.writeln("sqlStr += \";\";");
@@ -141,16 +141,16 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
   }
 
   void generateQueryOne(MetaClass metaClass, StringBuffer stringBuffer) {
-    stringBuffer.writeln("Future<QueryResultRow?> queryOne(String where, String? join, String? order) async {");
+    stringBuffer.writeln("Future<QueryResultRow?> queryOne(String? where, String? join, String? order) async {");
     stringBuffer.writeln("String sqlStr = \"SELECT * FROM " + "\" + " "dbConnection.getTableName(\"" + metaClass.className + "\")" + ";");
     stringBuffer.writeln("if(join != null) {");
-    stringBuffer.writeln("sqlStr += \" \" + join!;");
+    stringBuffer.writeln("sqlStr += \" \" + join;");
     stringBuffer.writeln("}");
     stringBuffer.writeln("if(where != null) {");
     stringBuffer.writeln("sqlStr += \" WHERE \" + where;");
     stringBuffer.writeln("}");
     stringBuffer.writeln("if(order != null) {");
-    stringBuffer.writeln("sqlStr += \" ORDER BY \" + order!;");
+    stringBuffer.writeln("sqlStr += \" ORDER BY \" + order;");
     stringBuffer.writeln("}");
     stringBuffer.writeln("sqlStr += \";\";");
     stringBuffer.writeln("List<QueryResultRow> l = await dbConnection.executeQuery(sqlStr);");
@@ -198,7 +198,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
       stringBuffer.writeln("if(hadBefore) columnNames += \", \";");
       stringBuffer.writeln("if(hadBefore) columnValues += \", \";");
       stringBuffer.writeln("hadBefore = true;");
-      stringBuffer.writeln("columnNames += \"" + "dbConnection.getColumnName(\"" + metaClass.className + "\", \"" + metaField.fieldName + "\")" + "\";");
+      stringBuffer.writeln("columnNames += dbConnection.getColumnName(\"" + metaClass.className + "\", \"" + metaField.fieldName + "\")" + ";");
       if (!metaField.isCustom) {
         stringBuffer.writeln("columnValues += " +
             metaField.columnType.convertToSqlPre +
@@ -225,10 +225,10 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
     });
     stringBuffer.writeln("if(batch == null) {");
     stringBuffer.writeln(
-        "return await dbConnection.executeUpdate(\"INSERT INTO " + "dbConnection.getTableName(\"" + metaClass.className + "\")" + " (\" +" + "columnNames + \") VALUES (\" + columnValues + \")\");");
+        "return await dbConnection.executeUpdate(\"INSERT INTO " + "\" + " + "dbConnection.getTableName(\"" + metaClass.className + "\")" + " + \" (\" +" + "columnNames + \") VALUES (\" + columnValues + \")\");");
     stringBuffer.writeln("} else {");
     stringBuffer.writeln(
-        "batch.customStatement(\"INSERT INTO " + "dbConnection.getTableName(\"" + metaClass.className + "\")" + " (\" +" + "columnNames + \") VALUES (\" + columnValues + \")\");");
+        "batch.customStatement(\"INSERT INTO " + "\" + " + "dbConnection.getTableName(\"" + metaClass.className + "\")" + " \" + (\" +" + "columnNames + \") VALUES (\" + columnValues + \")\");");
     stringBuffer.writeln("return Future(() => null);");
     stringBuffer.writeln("}");
 
