@@ -6,5 +6,5 @@ import 'package:sqlite3/wasm.dart';
 import '../InnerDatabase.dart';
 
 Future<InnerDatabase> constructDb(String name, int dbVersion, MigrationStrategy migrationStrategy, {bool logStatements = false, bool useOldPath = false}) async {
-  return InnerDatabase(WasmDatabase(path: name,sqlite3: await WasmSqlite3.loadFromUrl(Uri.parse('sqlite3.wasm')),  logStatements: logStatements), dbVersion, migrationStrategy);
+  return InnerDatabase(WasmDatabase(path: name,sqlite3: await WasmSqlite3.loadFromUrl(Uri.parse('sql-wasm.wasm')),  logStatements: logStatements), dbVersion, migrationStrategy);
 }
