@@ -1,9 +1,10 @@
 import 'package:drift/drift.dart';
 import 'package:drift/wasm.dart';
+import 'package:sqlite3/common.dart';
+import 'package:sqlite3/wasm.dart';
 
 import '../InnerDatabase.dart';
 
-InnerDatabase constructDb(String name, int dbVersion, MigrationStrategy migrationStrategy, {bool logStatements = false, bool useOldPath = false}) {
-  throw 'Platform not yet supported (TODO)';
-  //return InnerDatabase(WasmDatabase(path: name,sqlite3: ,  logStatements: logStatements), dbVersion, migrationStrategy);
+Future<InnerDatabase> constructDb(String name, int dbVersion, MigrationStrategy migrationStrategy, {bool logStatements = false, bool useOldPath = false}) async {
+  return InnerDatabase(WasmDatabase(path: name,sqlite3: await WasmSqlite3.loadFromUrl(Uri.parse('sqlite3.wasm')),  logStatements: logStatements), dbVersion, migrationStrategy);
 }
