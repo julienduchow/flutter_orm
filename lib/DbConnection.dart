@@ -67,10 +67,6 @@ class DbConnection {
     return database.getColumnName(className, fieldName);
   }
 
-  String getColumnNameWithoutTableNamePre(String fieldName) {
-    return database.getColumnNameWithoutTableNamePre(fieldName);
-  }
-
 }
 
 class DatabaseWithSql {
