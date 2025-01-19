@@ -51,7 +51,7 @@ abstract class Repository<E> {
 
   Future<void> delete(E entity) async => await getDaoInstance(dbConnection).delete(entity);
 
-  String col(String fieldName) => dbConnection.getColumnNameWithoutTableNamePre(fieldName);
+  String col(String fieldName) => dbConnection.getColumnName(fieldName, getDaoInstance(dbConnection).getTableName());
 
   static String camelToUnderscoreCase(String camelCaseStr) {
     return camelCaseStr.replaceAllMapped(RegExp(r'(?<=[a-z])[A-Z]'), (Match m) => ('_' + m.group(0)!)).toLowerCase();
