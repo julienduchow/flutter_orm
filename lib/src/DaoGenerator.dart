@@ -207,7 +207,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
             metaField.columnType.convertToSqlPre +
             metaClass.instanceName +
             "." +
-            metaField.fieldName + "!" +
+            metaField.fieldName + "!.replaceAll(\"'\", \"''\")" +
             metaField.columnType.convertToSqlPost +
             ";");
         stringBuffer.writeln("}");
@@ -258,7 +258,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
             metaField.columnType.convertToSqlPre +
             metaClass.instanceName +
             "." +
-            metaField.fieldName + "!" +
+            metaField.fieldName + "!.replaceAll(\"'\", \"''\")" +
             metaField.columnType.convertToSqlPost +
             ";");
       } else {
@@ -339,7 +339,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
             metaField.columnType.convertToSqlPre +
             metaClass.instanceName +
             "." +
-            metaField.fieldName + "!" +
+            metaField.fieldName + "!.replaceAll(\"'\", \"''\")" +
             metaField.columnType.convertToSqlPost +
             ";");
       } else {
