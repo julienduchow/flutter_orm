@@ -207,7 +207,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
             metaField.columnType.convertToSqlPre +
             metaClass.instanceName +
             "." +
-            metaField.fieldName + "!.replaceAll(\"'\", \"''\")" +
+            metaField.fieldName + "!" +
             metaField.columnType.convertToSqlPost +
             ";");
         stringBuffer.writeln("}");
@@ -258,7 +258,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
             metaField.columnType.convertToSqlPre +
             metaClass.instanceName +
             "." +
-            metaField.fieldName + "!.replaceAll(\"'\", \"''\")" +
+            metaField.fieldName + "!" +
             metaField.columnType.convertToSqlPost +
             ";");
       } else {
@@ -339,7 +339,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
             metaField.columnType.convertToSqlPre +
             metaClass.instanceName +
             "." +
-            metaField.fieldName + "!.replaceAll(\"'\", \"''\")" +
+            metaField.fieldName + "!" +
             metaField.columnType.convertToSqlPost +
             ";");
       } else {
@@ -444,10 +444,10 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
       return ColumnType("REAL", convertToSqlPost: ".toString()");
     } else if (dartType.toString() == "String?") {
       //print('Its a STR');
-      return ColumnType("VARCHAR(255)", convertToSqlPre: "\"'\" + ", convertToSqlPost: " + \"'\"");
+      return ColumnType("VARCHAR(255)", convertToSqlPre: "\"'\" + ", convertToSqlPost: ".replaceAll(\"'\", \"''\") + \"'\"");
     } else if (dartType.toString() == "longText? String?") {
       //print('Its a LSTR');
-      return ColumnType("TEXT", convertToSqlPre: "\"'\" + ", convertToSqlPost: " + \"'\"");
+      return ColumnType("TEXT", convertToSqlPre: "\"'\" + ", convertToSqlPost: ".replaceAll(\"'\", \"''\") + \"'\"");
     } else if (dartType.toString() == "bool?") {
       return ColumnType("INT", convertToSqlPost: " ? \"1\" : \"0\")", convertToSqlPre: "(", convertToObjectPost: " == 1");
     } else if (dartType.toString() == "DateTime?") {
