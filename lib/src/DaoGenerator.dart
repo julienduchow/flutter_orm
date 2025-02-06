@@ -459,7 +459,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
       return ColumnType("BIGINT", convertToSqlPost: ".inMilliseconds.toString()", convertToObjectPre: "Duration(milliseconds:(", convertToObjectPost: "))");
     } else {
       //print('Its nothing');
-      return ColumnType("TEXT", convertToSqlPre: "\"'\" + ", convertToSqlPost: " + \"'\"", isCustom: true);
+      return ColumnType("TEXT", convertToSqlPre: "\"'\" + ", convertToSqlPost: ".replaceAll(\"'\", \"''\") + \"'\"", isCustom: true);
     }
   }
 }
