@@ -410,7 +410,7 @@ class OrmGenerator extends GeneratorForAnnotation<entity> {
       MetaField metaField = MetaField(fieldName: field.displayName, fieldType: field.type.toString().substring(0, field.type.toString().length - 1),
       columnType: getSqlTypeForDartType(field.type, field));
       field.metadata.forEach((element) {
-        if (element.element.toString() == 'longText longText()') metaField.columnType = ColumnType("TEXT", convertToSqlPre: "\"'\" + ", convertToSqlPost: " + \"'\"");
+        if (element.element.toString() == 'longText longText()') metaField.columnType = ColumnType("TEXT", convertToSqlPre: "\"'\" + ", convertToSqlPost: ".replaceAll(\"'\", \"''\") + \"'\"");
       });
       metaField.isCustom = metaField.columnType.isCustom;
       field.metadata.forEach((element) {
